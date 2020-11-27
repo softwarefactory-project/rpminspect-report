@@ -1,0 +1,36 @@
+{
+  "name": "@softwarefactory-project/rpminspect-report",
+  "version": "0.1.0",
+  "description": "A web UI to browse rpminspect report",
+  "scripts": {
+    "build": "bsb -make-world",
+    "start": "bsb -make-world -w",
+    "serve": "mkdir -p dist && rm -f dist/result.json && ln -s ../tests/result.json dist/result.json && parcel serve ./src/index.html",
+    "dist": "parcel build ./src/index.html --public-url /",
+    "test": "jest --verbose --testMatch **/tests/*.bs.js",
+    "clean": "find src/ tests/ -name '*.bs.js' -delete && rm -Rf lib node_modules"
+  },
+  "license": "Apache-2.0",
+  "dependencies": {
+    "@patternfly/react-core": "^4.50.2",
+    "@softwarefactory-project/re-patternfly": "../re-patternfly",
+    "bs-fetch": "^0.6.2",
+    "decco": "^1.3.0",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "reason-react": "^0.9.1",
+    "remotedata-re": "https://github.com/rvcas/remotedata-re"
+  },
+  "devDependencies": {
+    "@glennsl/bs-jest": "^0.5.1",
+    "bs-platform": "^8.2.0",
+    "jest": "^26.5.0",
+    "parcel": "^1.12.4"
+  },
+  "jest": {
+    "moduleNameMapper": {
+      "\\.(css|less|svg)$": "<rootDir>/tests/styleMock.js"
+    }
+  },
+  "main": "index.js"
+}

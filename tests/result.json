@@ -1,0 +1,243 @@
+{
+   "rpminspect": [
+     {
+       "result": "INFO",
+       "waiver authorization": "Not Waivable",
+       "message": "command line",
+       "details": "\/usr\/bin\/rpminspect -c \/usr\/share\/rpminspect\/fedora.yaml -k -t BAD -a x86_64,noarch,src -o \/root\/zuul-output\/logs\/result.json -F json \/var\/tmp\/rpminspect\/mu-1.0.3-5.fc34 \/var\/tmp\/rpminspect\/mu-1.0.3-5.fc34"
+     }
+   ],
+   "license": [
+     {
+       "result": "INFO",
+       "waiver authorization": "Not Waivable",
+       "message": "Valid License Tag in mu-1.0.3-5.fc34.noarch: GPLv3"
+     },
+     {
+       "result": "INFO",
+       "waiver authorization": "Not Waivable",
+       "message": "Valid License Tag in mu-1.0.3-5.fc34.noarch: GPLv3"
+     },
+     {
+       "result": "OK",
+       "waiver authorization": "Not Waivable"
+     }
+   ],
+   "empty-payload": [
+     {
+       "result": "OK",
+       "waiver authorization": "Not Waivable"
+     }
+   ],
+   "lost-payload": [
+     {
+       "result": "OK",
+       "waiver authorization": "Not Waivable"
+     }
+   ],
+   "header-metadata": [
+     {
+       "result": "OK",
+       "waiver authorization": "Not Waivable"
+     }
+   ],
+   "man-pages": [
+     {
+       "result": "OK",
+       "waiver authorization": "Not Waivable"
+     }
+   ],
+   "xml-files": [
+     {
+       "result": "OK",
+       "waiver authorization": "Not Waivable"
+     }
+   ],
+   "elf-object-properties": [
+     {
+       "result": "OK",
+       "waiver authorization": "Not Waivable"
+     }
+   ],
+   "desktop-entry-files": [
+     {
+       "result": "INFO",
+       "waiver authorization": "Not Waivable",
+       "message": "File \/usr\/share\/applications\/mu.codewith.editor.desktop is not a valid desktop file on noarch; desktop-file-validate reports:",
+       "details": "\/usr\/share\/applications\/mu.codewith.editor.desktop: warning: value \"A Python editor for beginner programmers\" for key \"Comment\" in group \"Desktop Entry\" looks redundant with value \"A Python editor for beginner programmers\" of key \"GenericName\"\n\/usr\/share\/applications\/mu.codewith.editor.desktop: warning: value \"Application;Development;\" for key \"Categories\" in group \"Desktop Entry\" contains a deprecated value \"Application\"\n\/usr\/share\/applications\/mu.codewith.editor.desktop: warning: value \"text\/x-python3;text\/x-python3;\" for key \"MimeType\" in group \"Desktop Entry\" contains \"text\/x-python3\" more than once",
+       "remedy": "Refer to the Desktop Entry Specification at https:\/\/standards.freedesktop.org\/desktop-entry-spec\/latest\/ for help correcting the errors and warnings"
+     },
+     {
+       "result": "OK",
+       "waiver authorization": "Not Waivable"
+     }
+   ],
+   "dist-tag": [
+     {
+       "result": "OK",
+       "waiver authorization": "Not Waivable"
+     }
+   ],
+   "spec-file-name": [
+     {
+       "result": "OK",
+       "waiver authorization": "Not Waivable"
+     }
+   ],
+   "java-bytecode": [
+     {
+       "result": "OK",
+       "waiver authorization": "Not Waivable"
+     }
+   ],
+   "changed-files": [
+     {
+       "result": "OK",
+       "waiver authorization": "Not Waivable"
+     }
+   ],
+   "moved-files": [
+     {
+       "result": "OK",
+       "waiver authorization": "Not Waivable"
+     }
+   ],
+   "removed-files": [
+     {
+       "result": "OK",
+       "waiver authorization": "Not Waivable"
+     }
+   ],
+   "added-files": [
+     {
+       "result": "OK",
+       "waiver authorization": "Not Waivable"
+     }
+   ],
+   "upstream": [
+     {
+       "result": "OK",
+       "waiver authorization": "Not Waivable"
+     }
+   ],
+   "ownership": [
+     {
+       "result": "OK",
+       "waiver authorization": "Not Waivable"
+     }
+   ],
+   "shell-syntax": [
+     {
+       "result": "OK",
+       "waiver authorization": "Not Waivable"
+     }
+   ],
+   "annocheck": [
+     {
+       "result": "OK",
+       "waiver authorization": "Not Waivable"
+     }
+   ],
+   "dso-deps": [
+     {
+       "result": "OK",
+       "waiver authorization": "Not Waivable"
+     }
+   ],
+   "filesize": [
+     {
+       "result": "OK",
+       "waiver authorization": "Not Waivable"
+     }
+   ],
+   "permissions": [
+     {
+       "result": "OK",
+       "waiver authorization": "Not Waivable"
+     }
+   ],
+   "capabilities": [
+     {
+       "result": "OK",
+       "waiver authorization": "Not Waivable"
+     }
+   ],
+   "kernel-modules": [
+     {
+       "result": "OK",
+       "waiver authorization": "Not Waivable"
+     }
+   ],
+   "path-migration": [
+     {
+       "result": "OK",
+       "waiver authorization": "Not Waivable"
+     }
+   ],
+   "lto": [
+     {
+       "result": "OK",
+       "waiver authorization": "Not Waivable"
+     }
+   ],
+   "symlinks": [
+     {
+       "result": "OK",
+       "waiver authorization": "Not Waivable"
+     }
+   ],
+   "files": [
+     {
+       "result": "OK",
+       "waiver authorization": "Not Waivable"
+     }
+   ],
+   "types": [
+     {
+       "result": "OK",
+       "waiver authorization": "Not Waivable"
+     }
+   ],
+   "abidiff": [
+     {
+       "result": "OK",
+       "waiver authorization": "Not Waivable"
+     }
+   ],
+   "kmidiff": [
+     {
+       "result": "OK",
+       "waiver authorization": "Not Waivable"
+     }
+   ],
+   "config": [
+     {
+       "result": "OK",
+       "waiver authorization": "Not Waivable"
+     }
+   ],
+   "doc": [
+     {
+       "result": "OK",
+       "waiver authorization": "Not Waivable"
+     }
+   ],
+   "patches": [
+     {
+       "result": "OK",
+       "waiver authorization": "Not Waivable"
+     }
+   ],
+   "virus": [
+     {
+       "result": "OK",
+       "waiver authorization": "Not Waivable"
+     }
+   ],
+   "politics": [
+     {
+       "result": "OK",
+       "waiver authorization": "Not Waivable"
+     }
+   ]
+ }
