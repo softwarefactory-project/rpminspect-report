@@ -169,20 +169,20 @@ module API = (Fetcher: Http.Fetcher) => {
   module Hook = {
     // A standalone get hook
     let useGet =
-        (url: string, decoder: decoder_t('a)): (state_t('a), unit => unit) => {
+        (decoder: decoder_t('a)): (state_t('a), string => unit) => {
       let (state, setState) = React.useState(() => RemoteData.NotAsked);
       let set_state = s => setState(_prevState => s);
-      let dispatch = () =>
+      let dispatch = (url: string) =>
         get(url, decoder, r => state->updateRemoteData(r)->set_state)->ignore;
       (state, dispatch);
     };
 
     // A standalone get hook that automatically fetch the remote data
     let useAutoGet = (url: string, decoder: decoder_t('a)): state_t('a) => {
-      let (state, dispatch) = useGet(url, decoder);
+      let (state, dispatch) = useGet(decoder);
 
       // Trigger get when not asked
-      React.useEffect0(getWhenNeeded(state, dispatch));
+      React.useEffect0(getWhenNeeded(state, () => dispatch(url)));
       state;
     };
 
