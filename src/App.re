@@ -1,6 +1,6 @@
 open Patternfly;
 open Patternfly.Layout;
-
+open Webapi.Url;
 open Belt;
 
 let optionToResult =
@@ -177,7 +177,7 @@ module Result = {
 module ReportResults = {
   [@react.component]
   let make = (~name: string, ~results: list(JsonReport.result_t)) => {
-    <Card>
+    <Card isCompact=true>
       <CardTitle> name->React.string </CardTitle>
       {results
        ->Belt.List.mapWithIndex((i, result) => {
@@ -189,135 +189,72 @@ module ReportResults = {
   };
 };
 
-module UserInput = (Fetcher: Http.Fetcher) => {
-  module Hook' = Hook(Fetcher);
+module Report = {
   [@react.component]
-  let make = () => {
-    let (state, cb) = Hook'.use();
-    let (url, setURL) = React.useState(() => "result.json");
-    switch (state) {
-    | NotAsked => cb(url)
-    | _ => ()
-    };
-    <Card>
-      <CardTitle> "RPMInspect report URL"->React.string </CardTitle>
-      <CardBody>
-        <Grid>
-          <GridItem span=Column._11>
-            <TextInput
-              id="RPMInspect report URL"
-              value=url
-              _type=`Text
-              onChange={(v, _) => setURL(_ => v)}
-            />
-          </GridItem>
-          <GridItem span=Column._1>
-            <Button onClick={_ => {cb(url)}} variant=`Secondary>
-              "get"->React.string
-            </Button>
-          </GridItem>
-        </Grid>
-      </CardBody>
-    </Card>;
-  };
-};
-
-module Report = (Fetcher: Http.Fetcher) => {
-  module Hook' = Hook(Fetcher);
-
-  [@react.component]
-  let make = () => {
-    let (state, cb) = Hook'.use();
-    let (url, setURL) = React.useState(() => "result.json");
+  let make = (~data) => {
     let (ok_cb_state, setOkCB) = React.useState(() => false);
     let (info_cb_state, setInfoCB) = React.useState(() => true);
     let (verify_cb_state, setVerifyCB) = React.useState(() => true);
     let (bad_cb_state, setBadCB) = React.useState(() => true);
-    switch (state) {
-    | NotAsked => cb(url)
-    | _ => ()
+    let levelsStats = data->JsonReport.getLevelStats;
+    let data = data->JsonReport.sanitize;
+    let displayCommand = {
+      let command =
+        data
+        ->Belt.List.keep(entry => entry.name == "rpminspect")
+        ->Belt.List.head
+        ->Belt.Option.flatMap(entry => {
+            entry.results
+            ->Belt.List.head
+            ->Belt.Option.flatMap(result => result.details)
+          });
+      switch (command) {
+      | Some(cmd) =>
+        <Card isCompact=true>
+          <CardTitle> "RPMInspect command"->React.string </CardTitle>
+          <CardBody> cmd->React.string </CardBody>
+        </Card>
+
+      | None => React.null
+      };
     };
-    let displayInputURL =
-      <Card>
-        <CardTitle> "RPMInspect report URL"->React.string </CardTitle>
+
+    let filterByFilters =
+        (results: JsonReport.results_t): JsonReport.results_t => {
+      let filtered = [];
+      filtered
+      ->Belt.List.concat(
+          ok_cb_state ? results->JsonReport.filterResultsByLevel("OK") : [],
+        )
+      ->Belt.List.concat(
+          info_cb_state
+            ? results->JsonReport.filterResultsByLevel("INFO") : [],
+        )
+      ->Belt.List.concat(
+          verify_cb_state
+            ? results->JsonReport.filterResultsByLevel("VERIFY") : [],
+        )
+      ->Belt.List.concat(
+          bad_cb_state ? results->JsonReport.filterResultsByLevel("BAD") : [],
+        );
+    };
+
+    let displayFilter = {
+      let getLabel = (level: string): string => {
+        let count =
+          fun
+          | "OK" => levelsStats.ok
+          | "INFO" => levelsStats.info
+          | "VERIFY" => levelsStats.verify
+          | "BAD" => levelsStats.bad
+          | _ => 0;
+
+        level ++ "(" ++ count(level)->string_of_int ++ ")";
+      };
+      <Card isCompact=true>
+        <CardTitle> "Filters"->React.string </CardTitle>
         <CardBody>
-          <Grid>
-            <GridItem span=Column._11>
-              <TextInput
-                id="RPMInspect report URL"
-                value=url
-                _type=`Text
-                onChange={(v, _) => setURL(_ => v)}
-              />
-            </GridItem>
-            <GridItem span=Column._1>
-              <Button onClick={_ => {cb(url)}} variant=`Secondary>
-                "get"->React.string
-              </Button>
-            </GridItem>
-          </Grid>
-        </CardBody>
-      </Card>;
-    let buildReport = (data: JsonReport.t) => {
-      let levelsStats = data->JsonReport.getLevelStats;
-      let data = data->JsonReport.sanitize;
-      let displayCommand = {
-        let command =
-          data
-          ->Belt.List.keep(entry => entry.name == "rpminspect")
-          ->Belt.List.head
-          ->Belt.Option.flatMap(entry => {
-              entry.results
-              ->Belt.List.head
-              ->Belt.Option.flatMap(result => result.details)
-            });
-        switch (command) {
-        | Some(cmd) =>
-          <Card>
-            <CardTitle> "RPMInspect command"->React.string </CardTitle>
-            <CardBody> cmd->React.string </CardBody>
-          </Card>
-
-        | None => React.null
-        };
-      };
-
-      let filterByFilters =
-          (results: JsonReport.results_t): JsonReport.results_t => {
-        let filtered = [];
-        filtered
-        ->Belt.List.concat(
-            ok_cb_state ? results->JsonReport.filterResultsByLevel("OK") : [],
-          )
-        ->Belt.List.concat(
-            info_cb_state
-              ? results->JsonReport.filterResultsByLevel("INFO") : [],
-          )
-        ->Belt.List.concat(
-            verify_cb_state
-              ? results->JsonReport.filterResultsByLevel("VERIFY") : [],
-          )
-        ->Belt.List.concat(
-            bad_cb_state
-              ? results->JsonReport.filterResultsByLevel("BAD") : [],
-          );
-      };
-
-      let displayFilter = {
-        let getLabel = (level: string): string => {
-          let count =
-            fun
-            | "OK" => levelsStats.ok
-            | "INFO" => levelsStats.info
-            | "VERIFY" => levelsStats.verify
-            | "BAD" => levelsStats.bad
-            | _ => 0;
-
-          level ++ "(" ++ count(level)->string_of_int ++ ")";
-        };
-        <Card>
-          <CardTitle> "Filters"->React.string </CardTitle>
-          <CardBody>
+          <Bullseye>
             <Form isHorizontal=true>
               <FormGroup isInline=true fieldId="filters">
                 <Checkbox
@@ -346,64 +283,127 @@ module Report = (Fetcher: Http.Fetcher) => {
                 />
               </FormGroup>
             </Form>
-          </CardBody>
-        </Card>;
-      };
+          </Bullseye>
+        </CardBody>
+      </Card>;
+    };
 
-      <>
-        <PageSection isFilled=true> displayInputURL </PageSection>
-        <PageSection isFilled=true> displayCommand </PageSection>
-        <PageSection isFilled=true> displayFilter </PageSection>
-        <PageSection isFilled=true>
-          {data
-           ->Belt.List.keep(entry => entry.name != "rpminspect")
-           ->Belt.List.map(entry => {
-               let results = {
-                 entry.results->filterByFilters;
-               };
-               results->Belt.List.length > 0
-                 ? <ReportResults
-                     key={entry.name}
-                     results
-                     name={entry.name}
-                   />
-                 : React.null;
-             })
-           ->listToReactArray}
-        </PageSection>
-      </>;
-    };
-    switch (state) {
-    | NotAsked
-    | Loading(_) => <Spinner />
-    | Success(data) =>
-      <Grid hasGutter=true>
-        <GridItem offset=Column._1 span=Column._10>
-          data->buildReport
-        </GridItem>
-      </Grid>
-    | Failure(err) => <p> {("Error occured: " ++ err)->React.string} </p>
-    };
+    <Stack hasGutter=true>
+      displayCommand
+      displayFilter
+      {data
+       ->Belt.List.keep(entry => entry.name != "rpminspect")
+       ->Belt.List.map(entry => {
+           let results = {
+             entry.results->filterByFilters;
+           };
+           results->Belt.List.length > 0
+             ? <ReportResults key={entry.name} results name={entry.name} />
+             : React.null;
+         })
+       ->listToReactArray}
+    </Stack>;
   };
 };
 
-module Main = (Fetcher: Http.Fetcher) => {
-  module Report' = Report(Fetcher);
+module UserInput = {
+  [@react.component]
+  let make = (~url: string, ~state, ~reset) => {
+    let (url, setURL) = React.useState(() => url);
+    <Card isCompact=true>
+      <CardTitle> "RPMInspect report URL"->React.string </CardTitle>
+      <CardBody>
+        <Grid hasGutter=true>
+          <GridItem span=Column._11>
+            <TextInput
+              id="RPMInspect report URL"
+              value=url
+              _type=`Text
+              onChange={(v, _) => setURL(_ => v)}
+            />
+          </GridItem>
+          <GridItem span=Column._1>
+            <Grid hasGutter=true>
+              <GridItem span=Column._4>
+                <Button
+                  onClick={_ =>
+                    url |> String.length != 0
+                      ? {
+                        reset();
+                        ReasonReactRouter.push("?url=" ++ url);
+                      }
+                      : ()
+                  }
+                  variant=`Secondary>
+                  "get"->React.string
+                </Button>
+              </GridItem>
+              <GridItem span=Column._3>
+                {switch (state) {
+                 | RemoteData.Loading(_) => <Spinner size=`Lg />
+                 | _ => React.null
+                 }}
+              </GridItem>
+            </Grid>
+          </GridItem>
+        </Grid>
+      </CardBody>
+    </Card>;
+  };
+};
 
+module Reporter = (Fetcher: Http.Fetcher) => {
+  module Hook' = Hook(Fetcher);
   let header =
     <PageHeader
       logo={"RPMInspect"->React.string}
       headerTools={
         <PageHeaderTools>
           <PageHeaderToolsItem>
-            <Button variant=`Plain> <Icons.Help /> </Button>
+            <Button variant=`Plain>
+              <a href="https://github.com/rpminspect/rpminspect">
+                <Icons.Help />
+              </a>
+            </Button>
           </PageHeaderToolsItem>
         </PageHeaderTools>
       }
     />;
+  [@react.component]
+  let make = (~url: string) => {
+    let (state, cb, reset) = Hook'.use();
+    switch (state) {
+    | NotAsked => url |> String.length != 0 ? cb(url) : ()
+    | _ => ()
+    };
+    <Page header>
+      <PageSection variant=`Dark> <UserInput url state reset /> </PageSection>
+      <PageSection variant=`Default>
+        {switch (state) {
+         | NotAsked
+         | Loading(_) => React.null
+         | Success(data) => <Report data />
+         | Failure(err) =>
+           <Alert
+             title={("Unable to load the report: " ++ err)->React.string}
+             variant=`Danger
+           />
+         }}
+      </PageSection>
+    </Page>;
+  };
+};
+
+module Main = (Fetcher: Http.Fetcher) => {
+  module Reporter' = Reporter(Fetcher);
 
   [@react.component]
   let make = () => {
-    <> <Page header /> <Report' /> </>;
+    let qs = ReasonReactRouter.useUrl().search;
+    let url = URLSearchParams.make(qs) |> URLSearchParams.get("url");
+    switch (url) {
+    | Some(url') => <Reporter' url=url' />
+    | None => <Reporter' url="" />
+    };
   };
 };

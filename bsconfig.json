@@ -10,7 +10,10 @@
       "type": "dev"
     }
   ],
-  "bsc-flags": ["-bs-super-errors", "-bs-no-version-header"],
+  "bsc-flags": [
+    "-bs-super-errors",
+    "-bs-no-version-header"
+  ],
   "package-specs": [
     {
       "module": "commonjs",
@@ -23,10 +26,15 @@
     "bs-fetch",
     "decco",
     "remotedata-re",
+    "bs-webapi",
     "@softwarefactory-project/re-patternfly"
   ],
-  "bs-dev-dependencies": ["@glennsl/bs-jest"],
-  "ppx-flags": ["decco/ppx"],
+  "bs-dev-dependencies": [
+    "@glennsl/bs-jest"
+  ],
+  "ppx-flags": [
+    "decco/ppx"
+  ],
   "namespace": "SFUI",
   "refmt": 3
 }

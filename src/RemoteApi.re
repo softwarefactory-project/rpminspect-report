@@ -31,22 +31,29 @@ module API = (Fetcher: Http.Fetcher) => {
            json
            ->note("Network error!")
            ->Result.flatMap(json => json->decode->extractDeccoErrorToString)
-           ->{result => switch (result) {
-             | Ok(data) => Success(data)->setState
-             | Error(err) => Failure(err)->setState
-           }}->Ok
+           ->{
+               result =>
+                 switch (result) {
+                 | Ok(data) => Success(data)->setState
+                 | Error(err) => Failure(err)->setState
+                 };
+             }
+           ->Ok
            ->resolve
          )
     );
   };
 
   module Hook = {
-    let useGet = (decoder: decoder_t('a)): (state_t('a), string => unit) => {
+    let useGet =
+        (decoder: decoder_t('a))
+        : (state_t('a), string => unit, unit => unit) => {
       let (state, setState) = React.useState(() => RemoteData.NotAsked);
       let set_state = s => setState(_prevState => s);
+      let reset = () => NotAsked->set_state;
       let dispatch = (url: string) =>
         get(url, decoder, r => r->set_state)->ignore;
-      (state, dispatch);
+      (state, dispatch, reset);
     };
   };
 };

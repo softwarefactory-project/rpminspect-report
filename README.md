@@ -7,6 +7,7 @@ Install yarnpkg and nodejs: `sudo dnf install -y nodejs yarnpkg`
 Then setup the project:
 
 ```
+git clone https://softwarefactory-project.io/r/software-factory/re-patternfly ../re-patternfly
 yarn install
 yarn start
 ```
