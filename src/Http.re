@@ -1,46 +1,7 @@
-module type Fetcher = {
-  let fetch: string => Js.Promise.t(option(Js.Json.t));
-  let post:
-    (string, option(Js.Json.t)) =>
-    Js.Promise.t(Belt.Result.t(option(Js.Json.t), string));
-
-  let put:
-    (string, option(Js.Json.t)) =>
-    Js.Promise.t(Belt.Result.t(option(Js.Json.t), string));
-  let delete: string => Js.Promise.t(Belt.Result.t(Fetch.response, string));
+module type Fetcher = {let fetch: string => Js.Promise.t(option(Js.Json.t));
 };
 
 module BsFetch = {
-  let handleAPICallError =
-      (promise: Js.Promise.t(Fetch.Response.t))
-      : Js.Promise.t(Belt.Result.t(Fetch.response, string)) => {
-    promise
-    |> Js.Promise.then_(r =>
-         r |> Fetch.Response.ok
-           ? Ok(r)->Js.Promise.resolve
-           : Error("API call failed: " ++ Fetch.Response.statusText(r))
-             ->Js.Promise.resolve
-       );
-  };
-
-  let extractJson =
-      (promise: Js.Promise.t(Belt.Result.t(Fetch.Response.t, string)))
-      : Js.Promise.t(Belt.Result.t(option(Js.Json.t), string)) => {
-    promise
-    |> Js.Promise.then_(result =>
-         switch (result) {
-         | Ok(resp) =>
-           resp
-           |> Fetch.Response.json
-           |> Js.Promise.then_(decoded =>
-                Ok(decoded->Some)->Js.Promise.resolve
-              )
-           |> Js.Promise.catch(_ => Ok(None)->Js.Promise.resolve)
-         | Error(e) => Error(e)->Js.Promise.resolve
-         }
-       );
-  };
-
   let raiseOnNok = (promise: Js.Promise.t(Fetch.Response.t)) => {
     promise
     |> Js.Promise.then_(r =>
@@ -48,6 +9,7 @@ module BsFetch = {
            ? promise : Js.Exn.raiseError(Fetch.Response.statusText(r))
        );
   };
+
   let promiseToOptionalJson =
       (promise: Js.Promise.t(Fetch.response))
       : Js.Promise.t(option(Js.Json.t)) => {
@@ -60,44 +22,8 @@ module BsFetch = {
          None->Js.Promise.resolve;
        });
   };
+
   let fetch = (url: string): Js.Promise.t(option(Js.Json.t)) => {
     Fetch.fetch(url) |> promiseToOptionalJson;
-  };
-
-  let postOrPut =
-      (verb, url: string, body: option(Js.Json.t))
-      : Js.Promise.t(Belt.Result.t(option(Js.Json.t), string)) => {
-    let headers =
-      Fetch.HeadersInit.make({
-        "Accept": "*",
-        "Content-Type": "application/json",
-        //        "Upgrade-Insecure-Requests": "1",
-      });
-    let req =
-      switch (body) {
-      | None => Fetch.RequestInit.make(~method_=verb, ~headers, ())
-      | Some(json) =>
-        Fetch.RequestInit.make(
-          ~method_=verb,
-          ~body=json->Js.Json.stringify->Fetch.BodyInit.make,
-          //          ~redirect=Follow,
-          //          ~mode=NoCORS,
-          ~headers,
-          (),
-        )
-      };
-    Fetch.fetchWithInit(url, req) |> handleAPICallError |> extractJson;
-  };
-  let put = postOrPut(Put);
-  let post = postOrPut(Post);
-  let delete =
-      (url: string): Js.Promise.t(Belt.Result.t(Fetch.response, string)) => {
-    let req =
-      Fetch.RequestInit.make(
-        ~method_=Delete,
-        ~headers=Fetch.HeadersInit.make({"Accept": "*"}),
-        (),
-      );
-    Fetch.fetchWithInit(url, req) |> handleAPICallError;
   };
 };

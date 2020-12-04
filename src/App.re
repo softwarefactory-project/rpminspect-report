@@ -145,24 +145,28 @@ module Result = {
   };
 
   let getTitle = (message: option(string)) => {
-    <p>{message->Belt.Option.getWithDefault("No message")->React.string}</p>
+    <p>
+      {message->Belt.Option.getWithDefault("No message")->React.string}
+    </p>;
   };
 
   [@react.component]
   let make = (~result: JsonReport.result_t) => {
     switch (result.result) {
     | "OK" =>
-      <Alert variant=`Success title=getTitle(result.message)>
+      <Alert variant=`Success title={getTitle(result.message)}>
         result->alertBody
       </Alert>
     | "INFO" =>
-      <Alert variant=`Info title=getTitle(result.message)> result->alertBody </Alert>
+      <Alert variant=`Info title={getTitle(result.message)}>
+        result->alertBody
+      </Alert>
     | "VERIFY" =>
-      <Alert variant=`Warning title=getTitle(result.message)>
+      <Alert variant=`Warning title={getTitle(result.message)}>
         result->alertBody
       </Alert>
     | "BAD" =>
-      <Alert variant=`Danger title=getTitle(result.message)>
+      <Alert variant=`Danger title={getTitle(result.message)}>
         result->alertBody
       </Alert>
     | _ => React.null
@@ -181,6 +185,39 @@ module ReportResults = {
          })
        ->listToReactArray}
       <CardBody />
+    </Card>;
+  };
+};
+
+module UserInput = (Fetcher: Http.Fetcher) => {
+  module Hook' = Hook(Fetcher);
+  [@react.component]
+  let make = () => {
+    let (state, cb) = Hook'.use();
+    let (url, setURL) = React.useState(() => "result.json");
+    switch (state) {
+    | NotAsked => cb(url)
+    | _ => ()
+    };
+    <Card>
+      <CardTitle> "RPMInspect report URL"->React.string </CardTitle>
+      <CardBody>
+        <Grid>
+          <GridItem span=Column._11>
+            <TextInput
+              id="RPMInspect report URL"
+              value=url
+              _type=`Text
+              onChange={(v, _) => setURL(_ => v)}
+            />
+          </GridItem>
+          <GridItem span=Column._1>
+            <Button onClick={_ => {cb(url)}} variant=`Secondary>
+              "get"->React.string
+            </Button>
+          </GridItem>
+        </Grid>
+      </CardBody>
     </Card>;
   };
 };
