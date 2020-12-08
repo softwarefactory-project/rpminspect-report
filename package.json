@@ -8,6 +8,7 @@
     "start": "bsb -make-world -w",
     "serve": "mkdir -p dist && rm -f dist/result.json && ln -s ../tests/result.json dist/result.json && parcel serve ./src/index.html",
     "dist": "parcel build ./src/index.html --public-url /rpminspect-report-website/",
+    "dist-fedora": "parcel build ./src/index.html --public-url /rpminspect-report/",
     "test": "jest --verbose --testMatch **/tests/*.bs.js",
     "clean": "find src/ tests/ -name '*.bs.js' -delete && rm -Rf lib node_modules",
     "deploy": "gh-pages -d dist -r git@github.com:morucci/rpminspect-report-website.git -b main"
