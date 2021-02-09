@@ -1354,8 +1354,10 @@
   dependencies:
     "@sinonjs/commons" "^1.7.0"
 
-"@softwarefactory-project/re-patternfly@../re-patternfly":
-  version "0.1.0"
+"@softwarefactory-project/re-patternfly@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@softwarefactory-project/re-patternfly/-/re-patternfly-1.0.0.tgz#20f239ee2cab0a9ec6db17794387d26ff277076d"
+  integrity sha512-I0ByfexzZSnfFQWFcZQnYxJ5ycw5k0Ku4K7DaayI/BIUS3epqW+w2daJpPtPEo3j89BUT6sP9i6EDxEjlUQEYQ==
   dependencies:
     reason-react "^0.9.1"
 
@@ -6610,9 +6612,10 @@ relateurl@^0.2.7:
   resolved "https://registry.yarnpkg.com/relateurl/-/relateurl-0.2.7.tgz#54dbf377e51440aca90a4cd274600d3ff2d888a9"
   integrity sha1-VNvzd+UUQKypCkzSdGANP/LYiKk=
 
-"remotedata-re@https://github.com/rvcas/remotedata-re":
-  version "1.1.0"
-  resolved "https://github.com/rvcas/remotedata-re#b2716691923233d18f06bab9bc4f783c55412d38"
+remotedata-re@^1.1.2:
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/remotedata-re/-/remotedata-re-1.1.2.tgz#849abad6f1cb389a7be10f8bae8bce87564ca1bd"
+  integrity sha512-tYnxgCBMrAbldMSPftn3QfovV05J2LqyZe9BdWu2JcHxYQbKF7jZItpurI3oZPoWLR/pPQLd2krmkJ/UfOt1Dw==
 
 remove-trailing-separator@^1.0.1:
   version "1.1.0"

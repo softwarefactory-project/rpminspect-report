@@ -1,7 +1,5 @@
 - project:
     check: &jobs
       jobs:
-        - npm-test:
-            required-projects:
-              - software-factory/re-patternfly
+        - pnpm-test
     gate: *jobs
