@@ -22,11 +22,11 @@
   ],
   "suffix": ".bs.js",
   "bs-dependencies": [
-    "reason-react",
-    "bs-fetch",
+    "@rescript/react",
+    "@softwarefactory-project/res-remoteapi",
     "decco",
-    "remotedata-re",
     "bs-webapi",
+    "remotedata-re",
     "@softwarefactory-project/re-patternfly"
   ],
   "bs-dev-dependencies": [
@@ -35,6 +35,5 @@
   "ppx-flags": [
     "decco/ppx"
   ],
-  "namespace": "SFUI",
   "refmt": 3
 }

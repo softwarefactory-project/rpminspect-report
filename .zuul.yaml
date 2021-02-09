@@ -1,5 +1,8 @@
 - project:
     check: &jobs
       jobs:
-        - pnpm-test
+        - pnpm-test:
+            required-projects:
+              - software-factory/re-patternfly
+              - software-factory/res-remoteapi
     gate: *jobs

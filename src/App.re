@@ -112,14 +112,6 @@ module JsonReport = {
   };
 };
 
-module Hook = (Fetcher: Http.Fetcher) => {
-  module API = RemoteApi.API(Http.BsFetch);
-
-  let use = (url: string) => {
-    API.Hook.useGet(url, JsonReport.decode);
-  };
-};
-
 module Result = {
   let details = (result: JsonReport.result_t) => {
     switch (result.details) {
@@ -329,7 +321,7 @@ module UserInput = {
                   onClick={_ =>
                     url |> String.length != 0
                       ? {
-                        ReasonReactRouter.push("?url=" ++ url);
+                        RescriptReactRouter.push("?url=" ++ url);
                       }
                       : ()
                   }
@@ -351,8 +343,9 @@ module UserInput = {
   };
 };
 
-module Reporter = (Fetcher: Http.Fetcher) => {
-  module Hook' = Hook(Fetcher);
+module Reporter = (Client: RemoteAPI.HTTPClient) => {
+  module Hook = RemoteAPI.Hook(Client);
+
   let header =
     <PageHeader
       logo={"RPMInspect"->React.string}
@@ -370,7 +363,7 @@ module Reporter = (Fetcher: Http.Fetcher) => {
     />;
   [@react.component]
   let make = (~url: string) => {
-    let (state, refresh) = Hook'.use(url);
+    let state = Hook.useAutoGet(url, JsonReport.decode);
     <Page header>
       <PageSection variant=`Dark> <UserInput url state /> </PageSection>
       <PageSection variant=`Default>
@@ -389,12 +382,12 @@ module Reporter = (Fetcher: Http.Fetcher) => {
   };
 };
 
-module Main = (Fetcher: Http.Fetcher) => {
-  module Reporter' = Reporter(Fetcher);
+module Main = (Client: RemoteAPI.HTTPClient) => {
+  module Reporter' = Reporter(Client);
 
   [@react.component]
   let make = () => {
-    let qs = ReasonReactRouter.useUrl().search;
+    let qs = RescriptReactRouter.useUrl().search;
     let url = URLSearchParams.make(qs) |> URLSearchParams.get("url");
     switch (url) {
     | Some(url') => <Reporter' url=url' />
