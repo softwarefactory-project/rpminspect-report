@@ -46,14 +46,18 @@ module API = (Fetcher: Http.Fetcher) => {
 
   module Hook = {
     let useGet =
-        (decoder: decoder_t('a))
-        : (state_t('a), string => unit, unit => unit) => {
+        (url: string, decoder: decoder_t('a)): (state_t('a), unit => unit) => {
       let (state, setState) = React.useState(() => RemoteData.NotAsked);
       let set_state = s => setState(_prevState => s);
-      let reset = () => NotAsked->set_state;
-      let dispatch = (url: string) =>
-        get(url, decoder, r => r->set_state)->ignore;
-      (state, dispatch, reset);
+      let dispatch = () => get(url, decoder, r => r->set_state)->ignore;
+      React.useEffect1(
+        () => {
+          dispatch();
+          None;
+        },
+        [|url|],
+      );
+      (state, dispatch);
     };
   };
 };

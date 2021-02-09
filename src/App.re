@@ -115,8 +115,8 @@ module JsonReport = {
 module Hook = (Fetcher: Http.Fetcher) => {
   module API = RemoteApi.API(Http.BsFetch);
 
-  let use = () => {
-    API.Hook.useGet(JsonReport.decode);
+  let use = (url: string) => {
+    API.Hook.useGet(url, JsonReport.decode);
   };
 };
 
@@ -308,7 +308,7 @@ module Report = {
 
 module UserInput = {
   [@react.component]
-  let make = (~url: string, ~state, ~reset) => {
+  let make = (~url: string, ~state) => {
     let (url, setURL) = React.useState(() => url);
     <Card isCompact=true>
       <CardTitle> "RPMInspect report URL"->React.string </CardTitle>
@@ -329,7 +329,6 @@ module UserInput = {
                   onClick={_ =>
                     url |> String.length != 0
                       ? {
-                        reset();
                         ReasonReactRouter.push("?url=" ++ url);
                       }
                       : ()
@@ -371,13 +370,9 @@ module Reporter = (Fetcher: Http.Fetcher) => {
     />;
   [@react.component]
   let make = (~url: string) => {
-    let (state, cb, reset) = Hook'.use();
-    switch (state) {
-    | NotAsked => url |> String.length != 0 ? cb(url) : ()
-    | _ => ()
-    };
+    let (state, refresh) = Hook'.use(url);
     <Page header>
-      <PageSection variant=`Dark> <UserInput url state reset /> </PageSection>
+      <PageSection variant=`Dark> <UserInput url state /> </PageSection>
       <PageSection variant=`Default>
         {switch (state) {
          | NotAsked
