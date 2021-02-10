@@ -1,5 +1,5 @@
 {
-  "name": "sf-ui",
+  "name": "rpminspect-report",
   "reason": {
     "react-jsx": 3
   },
@@ -26,7 +26,6 @@
     "@softwarefactory-project/res-remoteapi",
     "decco",
     "bs-webapi",
-    "remotedata-re",
     "@softwarefactory-project/re-patternfly"
   ],
   "bs-dev-dependencies": [

@@ -6,11 +6,11 @@
   "scripts": {
     "build": "bsb -make-world",
     "start": "bsb -make-world -w",
+    "clean": "bsb -clean-world",
     "serve": "mkdir -p dist && rm -f dist/result.json && ln -s ../tests/result.json dist/result.json && parcel serve ./src/index.html",
     "dist": "parcel build ./src/index.html --public-url /rpminspect-report-website/",
     "dist-fedora": "parcel build ./src/index.html --public-url /rpminspect-report/",
     "test": "jest --verbose --testMatch **/tests/*.bs.js",
-    "clean": "find src/ tests/ -name '*.bs.js' -delete && rm -Rf lib node_modules",
     "deploy": "gh-pages -d dist -r git@github.com:morucci/rpminspect-report-website.git -b main"
   },
   "license": "Apache-2.0",
@@ -20,6 +20,7 @@
     "@rescript/react": "^0.10.1",
     "@softwarefactory-project/re-patternfly": "../re-patternfly",
     "@softwarefactory-project/res-remoteapi": "../res-remoteapi",
+    "bs-fetch": "^0.6.2",
     "bs-webapi": "^0.19.1",
     "decco": "^1.3.0",
     "react": "^16.14.0",

@@ -3,6 +3,8 @@ open Patternfly.Layout;
 open Webapi.Url;
 open Belt;
 
+module RemoteData = RemoteAPI.RemoteData;
+
 let optionToResult =
     (v: option('a), error: Decco.decodeError)
     : Result.t('a, Decco.decodeError) =>

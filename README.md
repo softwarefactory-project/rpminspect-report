@@ -8,26 +8,26 @@ Then setup the project:
 
 ```
 git clone https://softwarefactory-project.io/r/software-factory/re-patternfly ../re-patternfly
-yarn install
-yarn start
+pnpm install --shamefully-hoist
+pnpm start
 ```
 
 Run test with:
 
 ```
-yarn test
+pnpm test
 ```
 
 Setup live hot-reload:
 
 ```
-yarn serve
+pnpm serve
 # Open browser on http://localhost:1234
 ```
 
 Distribute with:
 
 ```
-yarn dist
+pnpm dist
 # Open browser in dist/
 ```
