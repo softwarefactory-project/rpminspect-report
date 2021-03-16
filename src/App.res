@@ -171,17 +171,21 @@ module Report = {
     let (bad_cb_state, setBadCB) = React.useState(() => true)
     let levelsStats = data->JsonReport.getLevelStats
     let data = data->JsonReport.sanitize
-    let displayCommand = {
+    let displayRPMInspectInfo = (entryname: string, displayname: string) => {
       let command = data
       ->Belt.List.keep(entry => entry.name == "rpminspect")
       ->Belt.List.head
       ->Belt.Option.flatMap(entry => {
-        entry.results->Belt.List.head->Belt.Option.flatMap(result => result.details)
+        entry.results
+        // rpminspect entries alway get a message
+        ->Belt.List.keep(result => result.message->Belt.Option.getExn == entryname)
+        ->Belt.List.head
+        ->Belt.Option.flatMap(result => result.details)
       })
       switch command {
       | Some(cmd) =>
         <Card isCompact=true>
-          <CardTitle> {"RPMInspect command"->React.string} </CardTitle>
+          <CardTitle> {displayname->React.string} </CardTitle>
           <CardBody> {cmd->React.string} </CardBody>
         </Card>
 
@@ -252,7 +256,8 @@ module Report = {
     }
 
     <Stack hasGutter=true>
-      displayCommand
+      {displayRPMInspectInfo("command line", "RPMInspect command")}
+      {displayRPMInspectInfo("version", "RPMInspect version")}
       displayFilter
       {data
       ->Belt.List.keep(entry => entry.name != "rpminspect")
